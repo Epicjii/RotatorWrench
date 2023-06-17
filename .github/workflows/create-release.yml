@@ -46,7 +46,7 @@ jobs:
       -   name: Create release
           uses: ncipollo/release-action@v1
           with:
-            name: ChatOverHaul ${{ env.RELEASE_VERSION }}
+            name: RotatorWrench ${{ env.RELEASE_VERSION }}
             tag: v${{ env.RELEASE_VERSION }}
             generateReleaseNotes: true
             artifacts: 'build/libs/*.jar'
