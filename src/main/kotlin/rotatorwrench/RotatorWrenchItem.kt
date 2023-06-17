@@ -5,8 +5,15 @@ import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 
 class RotatorWrenchItem {
+
+    companion object {
+        lateinit var itemMeta: ItemMeta
+
+        fun isWrenchInitialized() = ::itemMeta.isInitialized
+    }
 
     fun createWrench(): ItemStack {
         val wrench = ItemStack(Material.WOODEN_SWORD, 1)
@@ -17,6 +24,7 @@ class RotatorWrenchItem {
         meta.addEnchant(Enchantment.SWIFT_SNEAK, 1, false)
         meta.addEnchant(Enchantment.VANISHING_CURSE, 1, false)
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+        itemMeta = meta
         wrench.setItemMeta(meta)
         return wrench
     }

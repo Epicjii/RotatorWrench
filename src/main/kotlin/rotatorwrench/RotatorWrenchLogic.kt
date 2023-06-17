@@ -19,10 +19,13 @@ class RotatorWrenchLogic : Listener {
 
     @EventHandler
     private fun onRightClick(event: PlayerInteractEvent) {
+        if (!RotatorWrenchItem.isWrenchInitialized()) {
+            return
+        }
         if (event.action != Action.RIGHT_CLICK_BLOCK) {
             return
         }
-        if (!RotatorWrenchSummon.outstandingWrenchItems.contains(event.player.inventory.itemInMainHand)) {
+        if (event.item?.itemMeta != RotatorWrenchItem.itemMeta) {
             return
         }
         val clickedBlock = event.clickedBlock
@@ -90,17 +93,27 @@ class RotatorWrenchLogic : Listener {
 
     @EventHandler
     private fun depositToRemove(event: InventoryCloseEvent) {
+        if (!RotatorWrenchItem.isWrenchInitialized()) {
+            return
+        }
         if (event.inventory.holder != event.player) {
-            for (wrench in RotatorWrenchSummon.outstandingWrenchItems) {
-                event.inventory.remove(wrench)
+            for (item in event.inventory.storageContents!!.toMutableList()) {
+                if (item != null) {
+                    if (item.itemMeta == RotatorWrenchItem.itemMeta) {
+                        event.inventory.remove(item)
+                    }
+                }
             }
         }
     }
 
     @EventHandler
     private fun dropToRemove(event: PlayerDropItemEvent) {
+        if (!RotatorWrenchItem.isWrenchInitialized()) {
+            return
+        }
         val dropped = event.itemDrop.itemStack
-        if (RotatorWrenchSummon.outstandingWrenchItems.contains(dropped)) {
+        if (dropped.itemMeta == RotatorWrenchItem.itemMeta) {
             event.itemDrop.remove()
         }
     }
