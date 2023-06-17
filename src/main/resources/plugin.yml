@@ -1,0 +1,9 @@
+name: RotatorWrench
+version: '1.0'
+main: rotatorwrench.RotatorWrenchPlugin
+api-version: '1.20'
+commands:
+  rotator:
+    description: Rotates blocks
+    usage: /rotator
+    default: true
