@@ -11,6 +11,8 @@ import org.bukkit.block.data.Rail
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
 class RotatorWrenchLogic : Listener {
@@ -33,9 +35,11 @@ class RotatorWrenchLogic : Listener {
                     }
                     clickedBlock.blockData = directionalLogic(blockData)
                 }
+
                 is Rail -> {
                     clickedBlock.blockData = railLogic(blockData, clickedBlock)
                 }
+
                 is Orientable -> {
                     clickedBlock.blockData = orientableLogic(blockData)
                 }
@@ -50,7 +54,7 @@ class RotatorWrenchLogic : Listener {
         return blockData
     }
 
-    private fun railLogic(rail: Rail, block : Block): Rail {
+    private fun railLogic(rail: Rail, block: Block): Rail {
         val shapes = rail.shapes.toMutableList()
         shapes.removeAll(
             listOf(
@@ -82,5 +86,22 @@ class RotatorWrenchLogic : Listener {
         val currentFaceIndex = faces.indexOf(directionalBlock.facing)
         directionalBlock.facing = faces.elementAt((currentFaceIndex + 1) % faces.size)
         return directionalBlock
+    }
+
+    @EventHandler
+    private fun depositToRemove(event: InventoryCloseEvent) {
+        if (event.inventory.holder != event.player) {
+            for (wrench in RotatorWrenchSummon.outstandingWrenchItems) {
+                event.inventory.remove(wrench)
+            }
+        }
+    }
+
+    @EventHandler
+    private fun dropToRemove(event: PlayerDropItemEvent) {
+        val dropped = event.itemDrop.itemStack
+        if (RotatorWrenchSummon.outstandingWrenchItems.contains(dropped)) {
+            event.itemDrop.remove()
+        }
     }
 }

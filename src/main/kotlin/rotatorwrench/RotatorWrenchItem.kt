@@ -15,6 +15,7 @@ class RotatorWrenchItem {
         meta.setCustomModelData(100)
         meta.lore(listOf(Component.text("Right Click A Rotatable Block")))
         meta.addEnchant(Enchantment.SWIFT_SNEAK, 1, false)
+        meta.addEnchant(Enchantment.VANISHING_CURSE, 1, false)
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         wrench.setItemMeta(meta)
         return wrench
