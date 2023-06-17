@@ -44,7 +44,7 @@ jobs:
 
       # https://github.com/marketplace/actions/create-release
       -   name: Create release
-          uses: ncipollo/release-action@v1
+          uses: ncipollo/release-action@v1.12.0
           with:
             name: RotatorWrench ${{ env.RELEASE_VERSION }}
             tag: v${{ env.RELEASE_VERSION }}
