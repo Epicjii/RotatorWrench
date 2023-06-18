@@ -19,9 +19,6 @@ class RotatorWrenchLogic : Listener {
 
     @EventHandler
     private fun onRightClick(event: PlayerInteractEvent) {
-        if (!RotatorWrenchItem.isWrenchInitialized()) {
-            return
-        }
         if (event.action != Action.RIGHT_CLICK_BLOCK) {
             return
         }
@@ -93,15 +90,10 @@ class RotatorWrenchLogic : Listener {
 
     @EventHandler
     private fun depositToRemove(event: InventoryCloseEvent) {
-        if (!RotatorWrenchItem.isWrenchInitialized()) {
-            return
-        }
         if (event.inventory.holder != event.player) {
-            for (item in event.inventory.storageContents!!.toMutableList()) {
-                if (item != null) {
-                    if (item.itemMeta == RotatorWrenchItem.itemMeta) {
-                        event.inventory.remove(item)
-                    }
+            for (item in event.inventory) {
+                if (item.itemMeta == RotatorWrenchItem.itemMeta) {
+                    event.inventory.remove(item)
                 }
             }
         }
@@ -109,9 +101,6 @@ class RotatorWrenchLogic : Listener {
 
     @EventHandler
     private fun dropToRemove(event: PlayerDropItemEvent) {
-        if (!RotatorWrenchItem.isWrenchInitialized()) {
-            return
-        }
         val dropped = event.itemDrop.itemStack
         if (dropped.itemMeta == RotatorWrenchItem.itemMeta) {
             event.itemDrop.remove()
