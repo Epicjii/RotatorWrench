@@ -4,10 +4,13 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.BlockSupport
+import org.bukkit.block.data.Bisected.Half
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.Orientable
 import org.bukkit.block.data.Rail
+import org.bukkit.block.data.type.Slab
+import org.bukkit.block.data.type.Stairs
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -33,6 +36,10 @@ class RotatorWrenchLogic : Listener {
                     if (clickedBlock.type == Material.END_PORTAL_FRAME) {
                         return
                     }
+                    if (blockData is Stairs) {
+                        clickedBlock.blockData = stairLogic(blockData)
+                        return
+                    }
                     clickedBlock.blockData = directionalLogic(blockData)
                 }
 
@@ -43,8 +50,40 @@ class RotatorWrenchLogic : Listener {
                 is Orientable -> {
                     clickedBlock.blockData = orientableLogic(blockData)
                 }
+
+                is Slab -> {
+                    clickedBlock.blockData = slabLogic(blockData)
+                }
             }
         }
+    }
+
+    private fun slabLogic(blockData: Slab): Slab {
+        if (blockData.type == Slab.Type.DOUBLE) {
+            return blockData
+        }
+        val type = Slab.Type.values().filter {
+            it != Slab.Type.DOUBLE
+        }
+        val currentType = type.indexOf(blockData.type)
+        blockData.type = type.elementAt((currentType + 1) % type.size)
+        return blockData
+    }
+
+    private fun stairLogic(blockData: Stairs): Stairs {
+        val iterations = mutableListOf<Pair<Half, BlockFace>>()
+        for (face in blockData.faces) {
+            iterations.add(Pair(Half.TOP, face))
+            iterations.add(Pair(Half.BOTTOM, face))
+        }
+        val facing = blockData.facing
+        val half = blockData.half
+
+        val currentIndex = iterations.indexOf(Pair(half, facing))
+        val next = iterations.elementAt((currentIndex + 1) % iterations.size)
+        blockData.half = next.first
+        blockData.facing = next.second
+        return blockData
     }
 
     private fun orientableLogic(blockData: Orientable): Orientable {
