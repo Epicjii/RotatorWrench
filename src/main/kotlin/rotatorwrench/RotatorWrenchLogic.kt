@@ -131,8 +131,10 @@ class RotatorWrenchLogic : Listener {
     private fun depositToRemove(event: InventoryCloseEvent) {
         if (event.inventory.holder != event.player) {
             for (item in event.inventory) {
-                if (item.itemMeta == RotatorWrenchItem.itemMeta) {
-                    event.inventory.remove(item)
+                if (item != null) {
+                    if (item.itemMeta == RotatorWrenchItem.itemMeta) {
+                        event.inventory.remove(item)
+                    }
                 }
             }
         }
